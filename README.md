@@ -38,3 +38,10 @@ OAUTH2_FACEBOOK_CLIENTSECRET=<facebook-oauth-clientsecret>
 ```bash
 mvn spring-boot:run
 ```
+
+## Frontend Server Setup
+
+```bash
+cd react-social-frontend
+npm install && npm start
+```
