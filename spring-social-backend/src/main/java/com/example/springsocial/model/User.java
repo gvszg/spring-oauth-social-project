@@ -1,10 +1,13 @@
 package com.example.springsocial.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -35,6 +38,14 @@ public class User {
     private AuthProvider provider;
 
     private String providerId;
+
+    @Column(name = "create_time", updatable = false, nullable = false)
+    @CreationTimestamp
+    private Instant createTime;
+
+    @Column(name = "update_time", nullable = false)
+    @UpdateTimestamp
+    private Instant updateTime;
 
     public Long getId() {
         return id;
@@ -100,6 +111,22 @@ public class User {
         this.providerId = providerId;
     }
 
+    public Instant getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Instant createTime) {
+        this.createTime = createTime;
+    }
+
+    public Instant getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Instant updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -109,6 +136,8 @@ public class User {
                 ", emailVerified=" + emailVerified +
                 ", provider=" + provider +
                 ", providerId='" + providerId + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 }
