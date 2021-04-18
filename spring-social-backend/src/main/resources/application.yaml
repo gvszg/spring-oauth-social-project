@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: spring-social
+  flyway:
+    enabled: ${FLYWAY_ENABLED}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_URL}:${DB_PORT}/spring_social?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&character_set_server=utf8mb4
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+      data-source-properties:
+        cachePrepStmts: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        logSlowQueries: true
+        maintainTimeStats: false
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        rewriteBatchedStatements: true
+        useServerPrepStmts: true
+        useLocalSessionState: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: ${HIBERNATE_DDL_AUTO}
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${OAUTH2_GOOGLE_CLIENTID}
+            clientSecret: ${OAUTH2_GOOGLE_CLIENTSECRET}
+            redirectUri: ${OAUTH2_REDIRECTURI_BASE}/oauth2/callback/google
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: ${OAUTH2_FACEBOOK_CLIENTID}
+            clientSecret: ${OAUTH2_FACEBOOK_CLIENTSECRET}
+            redirectUri: ${OAUTH2_REDIRECTURI_BASE}/oauth2/callback/facebook # Note that facebook now mandates the use of https redirect URIs, so make sure your app supports https in production
+            scope:
+              - email
+              - public_profile
+          github:
+            clientId: ${OAUTH2_GITHUB_CLIENTID}
+            clientSecret: ${OAUTH2_GITHUB_CLIENTSECRET}
+            redirectUri: ${OAUTH2_REDIRECTURI_BASE}/oauth2/callback/github
+            scope:
+              - user:email
+              - read:user
+        provider:
+          facebook:
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+            tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+            userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
+  app:
+    auth:
+      tokenSecret: ${APP_AUTH_TOKENSECRET}
+      tokenExpirationMsec: ${APP_AUTH_TOKENEXPIRATIONMSEC}
+    oauth2:
+      # After successfully authenticating with the OAuth2 Provider,
+      # we'll be generating an auth token for the user and sending the token to the
+      # redirectUri mentioned by the frontend client in the /oauth2/authorize request.
+      # We're not using cookies because they won't work well in mobile clients.
+      authorizedRedirectUris:
+        - ${APP_OAUTH2_AUTHORIZEDREDIRECTURIS}
+  #      - myandroidapp://oauth2/redirect
+  #      - myiosapp://oauth2/redirect
+
+logging:
+  level:
+    root: info
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
